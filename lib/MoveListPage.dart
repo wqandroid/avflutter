@@ -38,7 +38,6 @@ class _MoveListPageState extends State<MoveListPage> {
   }
 
   Widget _renderRow(BuildContext context, int index) {
-//    Image.network(items[index].coverUrl,
 //        width: 90, height: 160, fit: BoxFit.fill)
     return Card(
         color: Colors.white,
@@ -58,7 +57,6 @@ class _MoveListPageState extends State<MoveListPage> {
               ),
             ),
             Expanded(
-
                 child: Container(
               margin: EdgeInsets.only(left: 8, top: 8),
               height: 120,

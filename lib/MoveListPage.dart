@@ -58,6 +58,7 @@ class _MoveListPageState extends State<MoveListPage> {
               ),
             ),
             Expanded(
+
                 child: Container(
               margin: EdgeInsets.only(left: 8, top: 8),
               height: 120,

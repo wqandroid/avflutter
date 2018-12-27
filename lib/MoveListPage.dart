@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'Move.dart';
 import 'MoveCenter.dart';
 import 'MoveDetail.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 
 class MoveListPage extends StatefulWidget {
   const MoveListPage({Key key}) : super(key: key);
@@ -60,8 +62,8 @@ class _MoveListPageState extends State<MoveListPage> {
                 margin: EdgeInsets.only(left: 4),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6.0),
-                  child: Image.network(
-                    items[index].coverUrl,
+                  child: new CachedNetworkImage(
+                    imageUrl:items[index].coverUrl,
                     width: 90.0,
                     height: 120.0,
                     fit: BoxFit.fitHeight,

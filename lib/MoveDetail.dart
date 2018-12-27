@@ -4,6 +4,7 @@ import 'Move.dart';
 import 'MoveCenter.dart';
 import 'beans/MoveBase.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'VideoPlayPage.dart';
 
 class _ContactCategory extends StatelessWidget {
   const _ContactCategory({Key key, this.icon, this.children}) : super(key: key);
@@ -156,11 +157,17 @@ class ContactsDemoState extends State<ContactsDemo> {
   MoveDetailInfo moveDetailInfo;
 
   _incrementCounter() {
-    MoveCenter().getMoveDetailInfo(move.link).then((d) {
-      setState(() {
-        moveDetailInfo = d;
-      });
-    });
+    MoveCenter().getAVG(move.code).then((res){
+      print("dizhi:$res");
+
+     final String url=res;
+
+      Navigator.push(context, new MaterialPageRoute(
+          builder: (context) =>
+              VideoApp(res)));
+
+       }
+    );
   }
 
   @override
@@ -270,7 +277,7 @@ class ContactsDemoState extends State<ContactsDemo> {
           height: 56,
           errorWidget:
               new Image.asset("images/def_avatar.png", width: 56, height: 56),
-          placeholder: new Container(color: Colors.red, width: 56, height: 56),
+          placeholder: new Container(color: Colors.grey, width: 56, height: 56),
         ),
       ));
     });
@@ -377,35 +384,6 @@ class ContactsDemoState extends State<ContactsDemo> {
                   children: buildScreenShoot(),
                 ),
                 _ContactCategory(icon: Icons.label, children: buildTags()),
-                _ContactCategory(
-                  icon: Icons.today,
-                  children: <Widget>[
-                    _ContactItem(
-                      lines: const <String>[
-                        'Birthday',
-                        'January 9th, 1989',
-                      ],
-                    ),
-                    _ContactItem(
-                      lines: const <String>[
-                        'Wedding anniversary',
-                        'June 21st, 2014',
-                      ],
-                    ),
-                    _ContactItem(
-                      lines: const <String>[
-                        'First day in office',
-                        'January 20th, 2015',
-                      ],
-                    ),
-                    _ContactItem(
-                      lines: const <String>[
-                        'Last day in office',
-                        'August 9th, 2018',
-                      ],
-                    ),
-                  ],
-                ),
               ]),
             ),
           ],

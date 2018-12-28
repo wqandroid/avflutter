@@ -152,22 +152,32 @@ class ContactsDemoState extends State<ContactsDemo> {
 
   Move move;
 
+  static const platform = const MethodChannel("samples.flutter.io/sign");
+
   ContactsDemoState(this.move);
 
   MoveDetailInfo moveDetailInfo;
 
   _incrementCounter() {
-    MoveCenter().getAVG(move.code).then((res){
-      print("dizhi:$res");
+    MoveCenter().getAVG(move.code).then((res) {
+      if(res==null){
+        print("无法获取播放地址");
+      }else{
+        print("解释视频id:$res");
+        getVideoUrl(res);
+      }
+    });
+  }
 
-     final String url=res;
-
-      Navigator.push(context, new MaterialPageRoute(
-          builder: (context) =>
-              VideoApp(res)));
-
-       }
-    );
+  Future getVideoUrl(String vid) async {
+    Map<String, dynamic> args = {
+      "vid": vid,
+    };
+    await platform.invokeMethod("getsign", args).then((url) {
+      print("通过 原生解析的url:$url");
+      Navigator.push(
+          context, new MaterialPageRoute(builder: (context) => VideoApp(url)));
+    });
   }
 
   @override
@@ -206,7 +216,10 @@ class ContactsDemoState extends State<ContactsDemo> {
                 height: 90,
               ),
             ),
-            Text(avt.name.trim(), maxLines: 1, overflow: TextOverflow.clip,textAlign: TextAlign.start)
+            Text(avt.name.trim(),
+                maxLines: 1,
+                overflow: TextOverflow.clip,
+                textAlign: TextAlign.start)
           ],
         ),
       ));

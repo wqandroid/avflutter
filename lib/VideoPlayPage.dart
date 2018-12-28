@@ -24,6 +24,7 @@ class _VideoAppState extends State<VideoApp> {
   @override
   void initState() {
     super.initState();
+    print("播放:$url");
     _controller = VideoPlayerController.network(
       url,
     )..addListener(() {

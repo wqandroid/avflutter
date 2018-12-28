@@ -34,8 +34,15 @@ class MoveCenter {
 //  }
 // AVMOO 日本  https://avmoo.xyz
 // AVMOO 日本无码  https://avsox.net
+
+  static const String baseUrl1="https://avmoo.xyz";
+  static const String baseUrl2="https://avsox.net";
+
+
   Future getMove(int page) async {
-    String url = "https://avmoo.xyz/cn/popular/page/$page";
+
+
+    String url = "$baseUrl2/cn/popular/page/$page";
     try {
       var client = new http.Client();
       var response = await client.get(url);
@@ -158,12 +165,9 @@ class MoveCenter {
         if (success && total_videos > 0) {
           Map<String, dynamic> video = responseJson["videos"][0];
           String vid = video["vid"];
-          int timestemp = (DateTime.now().millisecondsSinceEpoch ~/ 1000);
-          final String ts = "$timestemp";
-          print("当前时间:$ts");
-//          String sign = b(vid, ts);
           videoUrl = video["preview_video_url"];
           print("播放地址:$videoUrl");
+          return vid;
         }
       }
     } catch (e) {
@@ -171,4 +175,6 @@ class MoveCenter {
     }
     return videoUrl;
   }
+
+
 }

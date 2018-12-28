@@ -158,6 +158,8 @@ class ContactsDemoState extends State<ContactsDemo> {
 
   MoveDetailInfo moveDetailInfo;
 
+  static String dialogcontent;
+
   _incrementCounter() {
     MoveCenter().getAVG(move.code).then((res) {
       if(res==null){
@@ -167,7 +169,14 @@ class ContactsDemoState extends State<ContactsDemo> {
         getVideoUrl(res);
       }
     });
+
   }
+
+
+
+
+
+
 
   Future getVideoUrl(String vid) async {
     Map<String, dynamic> args = {
@@ -175,8 +184,8 @@ class ContactsDemoState extends State<ContactsDemo> {
     };
     await platform.invokeMethod("getsign", args).then((url) {
       print("通过 原生解析的url:$url");
-      Navigator.push(
-          context, new MaterialPageRoute(builder: (context) => VideoApp(url)));
+//      Navigator.push(
+//          context, new MaterialPageRoute(builder: (context) => VideoApp(url)));
     });
   }
 

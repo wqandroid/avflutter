@@ -1,14 +1,27 @@
 package avsox2.prd.com.flutterapp;
 
+import android.annotation.SuppressLint;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
+import android.webkit.MimeTypeMap;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
+
 
 public class MainActivity extends FlutterActivity {
 
@@ -30,14 +43,47 @@ public class MainActivity extends FlutterActivity {
                     final String ts = String.valueOf(System.currentTimeMillis() / 1000);
                     String vid = methodCall.argument("vid");
                     result.success(String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", vid, ts, b(vid, ts)));
+                    playVideoUse(String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", vid, ts, b(vid, ts)));
                 }
             }
         });
 
-
-
     }
 
+
+
+    public void playVideoUse(String url){
+//        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
+////        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+//        Intent mediaIntent = new Intent(Intent.ACTION_VIEW);
+////        mediaIntent.setDataAndType(Uri.parse(url), "video/*");
+//        mediaIntent.putExtra("url",url);
+//        startActivity(mediaIntent);
+
+        Intent intent = new Intent();
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        ComponentName cn = new ComponentName("wq.video.com.videolook", "wq.video.com.videolook.ui.avlist.detail.OtherMoveActivity");
+        intent.putExtra("url", url);
+        intent.setComponent(cn);
+        if (isIntentAvailable(this,intent)){
+            try {
+                startActivity(intent);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }else {
+            Toast.makeText(this,"没找到",Toast.LENGTH_LONG).show();
+        }
+    }
+
+
+    public static boolean isIntentAvailable(Context context, Intent intent) {
+        final PackageManager packageManager = context.getPackageManager();
+        @SuppressLint("WrongConstant") List<ResolveInfo> list = packageManager.queryIntentActivities(intent,
+                PackageManager.GET_ACTIVITIES);
+        return list.size() > 0;
+
+    }
 
     public static String b(String s1, String s2) {
         try {

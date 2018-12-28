@@ -25,7 +25,7 @@ dependencies:
   html: ^0.13.3+3
   flutter_cache_manager: ^0.2.0+1
   cached_network_image: ^0.5.1
-  video_player: ^0.8.0
+#  video_player: ^0.8.0
   
 dev_dependencies:
   flutter_test:

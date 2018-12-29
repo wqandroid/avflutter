@@ -29,7 +29,7 @@ class _MoveListPageState extends State<MoveListPage> {
   static int page = 1;
   bool isLoading;
 
-  String type = "";
+  String type = "popular";
   MoveCenter moveCenter = new MoveCenter();
 
 
@@ -90,7 +90,12 @@ class _MoveListPageState extends State<MoveListPage> {
                     imageUrl: items[index].coverUrl,
                     width: 90.0,
                     height: 120.0,
-                    fit: BoxFit.fitHeight,
+                    fit: BoxFit.cover,
+                    placeholder: Container(
+                      width: 90.0,
+                      height: 120.0,
+                      color: Colors.grey,
+                    ),
                   ),
                 ),
               ),

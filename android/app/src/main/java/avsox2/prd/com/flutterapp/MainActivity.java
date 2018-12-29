@@ -38,12 +38,15 @@ public class MainActivity extends FlutterActivity {
         new MethodChannel(getFlutterView(), CHANNEL).setMethodCallHandler(new MethodChannel.MethodCallHandler() {
             @Override
             public void onMethodCall(MethodCall methodCall, MethodChannel.Result result) {
-
                 if (methodCall.method.equals("getsign")) {
                     final String ts = String.valueOf(System.currentTimeMillis() / 1000);
                     String vid = methodCall.argument("vid");
                     result.success(String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", vid, ts, b(vid, ts)));
                     playVideoUse(String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", vid, ts, b(vid, ts)));
+                }else if(methodCall.method.equals("preview")){
+                    String url = methodCall.argument("url");
+                    playVideoUse(url);
+                    result.success("");
                 }
             }
         });

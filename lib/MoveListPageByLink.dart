@@ -6,14 +6,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'util/VlaueChange.dart';
 import 'package:event_bus/event_bus.dart';
 
-
 class MoveListPageByLink extends StatefulWidget {
+  String link;
+  String title;
 
-
-  final String link;
-  final String title;
-
-  MoveListPageByLink(this.title,this.link);
+  MoveListPageByLink(this.title, this.link);
 
   @override
   State<StatefulWidget> createState() {
@@ -23,19 +20,19 @@ class MoveListPageByLink extends StatefulWidget {
 }
 
 class _MoveListPageByLink extends State<MoveListPageByLink> {
-  static List<Move> items = new List();
+  List<Move> items = new List();
   ScrollController _controller = new ScrollController();
   static int page = 1;
   bool isLoading;
 
   MoveCenter moveCenter = new MoveCenter();
 
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    items.clear();
+    page=1;
     _controller.addListener(() {
       var maxScroll = _controller.position.maxScrollExtent;
       var pixels = _controller.position.pixels;
@@ -71,41 +68,43 @@ class _MoveListPageByLink extends State<MoveListPageByLink> {
                     width: 90.0,
                     height: 120.0,
                     fit: BoxFit.fitHeight,
+                    placeholder: Container(
+                      color: Colors.grey,
+                      width: 90.0,
+                      height: 120.0,
+                    ),
                   ),
                 ),
               ),
               Expanded(
                   child: Container(
-                    margin: EdgeInsets.only(left: 8, top: 8),
-                    height: 120,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                margin: EdgeInsets.only(left: 8, top: 8),
+                height: 120,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
 //                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          items[index].title, maxLines: 2,
-                          style: TextStyle(
-                              fontSize: 16.0, color: Colors.black87),
-                          overflow: TextOverflow
-                              .ellipsis, //文字超出屏幕之后的处理方式  TextOverflow.clip剪裁   TextOverflow.fade 渐隐  TextOverflow.ellipsis省略号
-                        ),
-                        Text(
-                          "番号:${items[index].code}",
-                          textAlign: TextAlign.left,
-                          textDirection: TextDirection.ltr, //文本方向
-                          style: TextStyle(
-                              fontSize: 13.0, color: Colors.black45),
-                        ),
-                        Text(
-                          "时间:${items[index].date}",
-                          textAlign: TextAlign.left,
-                          textDirection: TextDirection.ltr, //文本方向
-                          style: TextStyle(
-                              fontSize: 13.0, color: Colors.black45),
-                        )
-                      ],
+                  children: [
+                    Text(
+                      items[index].title, maxLines: 2,
+                      style: TextStyle(fontSize: 16.0, color: Colors.black87),
+                      overflow: TextOverflow
+                          .ellipsis, //文字超出屏幕之后的处理方式  TextOverflow.clip剪裁   TextOverflow.fade 渐隐  TextOverflow.ellipsis省略号
                     ),
-                  ))
+                    Text(
+                      "番号:${items[index].code}",
+                      textAlign: TextAlign.left,
+                      textDirection: TextDirection.ltr, //文本方向
+                      style: TextStyle(fontSize: 13.0, color: Colors.black45),
+                    ),
+                    Text(
+                      "时间:${items[index].date}",
+                      textAlign: TextAlign.left,
+                      textDirection: TextDirection.ltr, //文本方向
+                      style: TextStyle(fontSize: 13.0, color: Colors.black45),
+                    )
+                  ],
+                ),
+              ))
             ],
           )),
     );

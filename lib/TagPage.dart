@@ -63,13 +63,22 @@ class ScrollableTabsDemoState extends State<ScrollableTabsTags>
         //宽高比
         childAspectRatio: 4 / 1,
         children: List.generate(tags.length, (index) {
-          return Container(
+
+
+
+          return GestureDetector(child: Container(
             decoration: BoxDecoration(
                 border: Border.all(color: Colors.blueGrey, width: 1)),
             child: Center(
               child: Text(tags[index].name, textAlign: TextAlign.center),
             ),
-          );
+          ),onTap: (){
+            print(tags[index].name);
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => MoveListPageByLink(tags[index].name, tags[index].link)));
+            },);
         }),
       );
     }
@@ -77,17 +86,16 @@ class ScrollableTabsDemoState extends State<ScrollableTabsTags>
 
   //              onTap: _onGoLink(tags[index])
   _onGoLink(Genre g) {
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) => MoveListPageByLink(g.name, g.link)));
+
   }
 
   List<Widget> getTab() {
     if (map == null) {
       return [
         Container(
-          child: Text("laoding"),
+          child: Center(
+            child: Text("laoding"),
+          ),
         ),
       ];
     } else {

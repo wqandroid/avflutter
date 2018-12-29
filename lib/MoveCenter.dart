@@ -35,12 +35,10 @@ class MoveCenter {
 // AVMOO 日本  https://avmoo.xyz
 // AVMOO 日本无码  https://avsox.net
 
-  static const String baseUrl1="https://avmoo.xyz";
-  static const String baseUrl2="https://avsox.net";
+  static const String baseUrl1 = "https://avmoo.xyz";
+  static const String baseUrl2 = "https://avsox.net";
 
-
-  Future getMove(String type,int page) async {
-
+  Future getMove(String type, int page) async {
     //type null 主页
     //type released 发布
     //type popular 热门
@@ -72,13 +70,13 @@ class MoveCenter {
     }
   }
 
-
 //  return JAViewer.SERVICE.get(this.link + "/page/" + page);
 
+  Future getMoveByLink(String link, int page) async {
 
-  Future getMoveByLink(String link,int page) async {
-    print("请求link:$link");
     String url = "$link/page/$page";
+    print("请求Url:$url");
+
     try {
       var client = new http.Client();
       var response = await client.get(url);
@@ -105,84 +103,72 @@ class MoveCenter {
     }
   }
 
-
 //  @GET(BasicService.LANGUAGE_NODE + "/genre")
 //  Call<ResponseBody> getGenre();
 
-
-  Future getTags()async{
-
+  Future getTags() async {
     String url = "$baseUrl2/cn/genre/";
     try {
       var client = new http.Client();
       var response = await client.get(url);
       var document = parse(response.body);
 
+      Map<String, List<Genre>> data = new Map();
 
-      Map<String,List<Genre>> data=new Map();
+      Element container = document.getElementsByClassName("pt-10").first;
 
-
-      Element container=document.getElementsByClassName("pt-10").first;
-
-      List<String> keys=new List();
-      container.getElementsByTagName("h4").forEach((e){
+      List<String> keys = new List();
+      container.getElementsByTagName("h4").forEach((e) {
         keys.add(e.text);
       });
 
-      List<List<Genre>> genres =new List();
-      container.getElementsByClassName("genre-box")
-      .forEach((e){
+      List<List<Genre>> genres = new List();
+      container.getElementsByClassName("genre-box").forEach((e) {
+        List<Genre> list = new List();
 
-        List<Genre> list=new List();
-
-        e.getElementsByTagName("a").forEach((e){
+        e.getElementsByTagName("a").forEach((e) {
           list.add(Genre(e.text, e.attributes["href"]));
         });
         genres.add(list);
-
       });
 
-      for(int i=0;i<keys.length;i++){
-        List<Genre> value=genres[i];
-        String key=keys[i];
-        if(key ==""){
-          key="场地";
+      for (int i = 0; i < keys.length; i++) {
+        List<Genre> value = genres[i];
+        String key = keys[i];
+        if (key == "") {
+          key = "场地";
         }
-        data[key]=value;
+        data[key] = value;
       }
       return data;
-    }catch(e){
+    } catch (e) {
       print(e);
       return null;
     }
   }
 
-
-  Future getActresses(int page)async{
-
+  Future getActresses(int page) async {
     String url = "$baseUrl2/cn/actresses/page/$page";
-    List<Actress> list=[];
+    List<Actress> list = [];
     try {
       var client = new http.Client();
       var response = await client.get(url);
       var document = parse(response.body);
-      List<Element> boxs=document.querySelectorAll("a[class*=avatar-box]");
-      boxs.forEach((e){
-        Element img=e.querySelector("div.photo-frame > img");
-        Element span=e.querySelector("div.photo-info > span");
-        String avatarUrl= img.attributes["src"];
-        if(avatarUrl!=null && avatarUrl.endsWith("actor.jpg")){
+      List<Element> boxs = document.querySelectorAll("a[class*=avatar-box]");
+      boxs.forEach((e) {
+        Element img = e.querySelector("div.photo-frame > img");
+        Element span = e.querySelector("div.photo-info > span");
+        String avatarUrl = img.attributes["src"];
+        if (avatarUrl != null && avatarUrl.endsWith("actor.jpg")) {
           list.add(Actress(span.text, avatarUrl, e.attributes["href"]));
         }
       });
       return list;
-    }catch(e){
+    } catch (e) {
       print(e);
       return null;
     }
-}
-
-
+  }
 
   Future getMoveDetailInfo(String link) async {
     print("get__:$link");
@@ -261,21 +247,13 @@ class MoveCenter {
     }
   }
 
-
-
-
-
-
-
-
-  Future<String> getAVG(String key) async {
-    String videoUrl;
+  Future<AVinfo> getAVG(String key) async {
+    AVinfo aVinfo=new AVinfo();
     try {
       String url = "http://api.rekonquer.com/psvs/search.php?kw=$key";
       print("请求地址:$url");
       var client = new http.Client();
       var response = await client.get(url);
-//      print(response.body);
       if (response.statusCode == 200) {
         Map<String, dynamic> avg = json.decode(response.body);
         bool success = avg["success"];
@@ -287,16 +265,14 @@ class MoveCenter {
         if (success && total_videos > 0) {
           Map<String, dynamic> video = responseJson["videos"][0];
           String vid = video["vid"];
-          videoUrl = video["preview_video_url"];
-          print("播放地址:$videoUrl");
-          return vid;
+          String videoUrl = video["preview_video_url"];
+          aVinfo = new AVinfo.name(vid, videoUrl, "");
+          return aVinfo;
         }
       }
     } catch (e) {
       print(e);
     }
-    return videoUrl;
+    return aVinfo;
   }
-
-
 }

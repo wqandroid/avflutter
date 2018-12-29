@@ -71,7 +71,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   static var itemTextSelStyle=TextStyle(fontWeight: FontWeight.w600,color: Colors.blue);
 
-  static int oldIndexPage=PAGE_HOME;
+  static int oldIndexPage=PAGE_HOT;
 
   _chanList(int indexPage){
     print("修改列:$indexPage");

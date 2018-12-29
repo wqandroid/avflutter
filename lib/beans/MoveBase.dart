@@ -51,3 +51,14 @@ class MoveDetailInfo{
    List<Genre> genres =[];
    List<Actress> actresses=[];
 }
+
+class AVinfo{
+
+
+
+  String videoId;
+  String previewUrl;
+  String PlayUrl;
+  AVinfo.name(this.videoId, this.previewUrl, this.PlayUrl);
+  AVinfo();
+}

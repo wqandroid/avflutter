@@ -39,10 +39,13 @@ class MoveCenter {
   static const String baseUrl2="https://avsox.net";
 
 
-  Future getMove(int page) async {
+  Future getMove(String type,int page) async {
 
+    //type null 主页
+    //type released 发布
+    //type popular 热门
 
-    String url = "$baseUrl2/cn/popular/page/$page";
+    String url = "$baseUrl2/cn/$type/page/$page";
     try {
       var client = new http.Client();
       var response = await client.get(url);

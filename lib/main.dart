@@ -4,6 +4,8 @@ import 'MoveCenter.dart';
 import 'Move.dart';
 
 import 'MoveListPage.dart';
+import 'package:event_bus/event_bus.dart';
+import 'util/VlaueChange.dart';
 
 void main() => runApp(new MyApp());
 
@@ -26,7 +28,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.red,
           bottomAppBarColor: Colors.white,
           brightness: Brightness.light),
-      home: new MyHomePage(title: 'Flutter Demo Home Page'),
+      home: new MyHomePage(title: 'AV图书馆'),
     );
   }
 }
@@ -54,79 +56,52 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  static int _counter = 10;
 
-  int _selectedIndex = 0;
-  static String htmlData;
+  ValueNotifierData vd = ValueNotifierData('Hello World');
 
-  void _incrementCounter() {
+
+  static var itemTextStyle=TextStyle(fontWeight: FontWeight.w600,color: Colors.black54);
+  static int oldtype=MoveListPage.PAGE_HOME;
+  _chanList(int type){
+    print("修改列:$type");
+    if(oldtype == type)return;
     setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
+      if(type == MoveListPage.PAGE_HOT){
+        vd.value="popular";
+      }else if(type == MoveListPage.PAGE_HOME){
+        vd.value="";
+      }else if(type == MoveListPage.PAGE_RELEASE){
+        vd.value="released";
+      }
+      oldtype=type;
     });
+    Navigator.pop(context);
   }
 
-
-
-  final _bottomItems = <BottomNavigationBarItem>[
-    BottomNavigationBarItem(icon: Icon(Icons.home), title: Text("Home")),
-    BottomNavigationBarItem(icon: Icon(Icons.message), title: Text("Message")),
-    BottomNavigationBarItem(
-        icon: Icon(Icons.settings), title: Text("Settings")),
-  ];
-
-
-
-  void _OnItemTap(int index) {
-    print("index$index");
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  var _widgetOptions;
-
-  void initWidetOPtion(BuildContext content) {
-    _widgetOptions = <Widget>[
-      Text('Index 0: Home$_counter'),
-      MoveListPage(),
-      Text('Index 2: School$htmlData'),
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    initWidetOPtion(context);
-
     return new Scaffold(
       appBar: new AppBar(
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
         title: new Text(widget.title),
       ),
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: _bottomItems,
-        currentIndex: _selectedIndex,
-        fixedColor: Colors.red,
-        onTap: _OnItemTap,
-      ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: new Icon(Icons.add),
+      body:MoveListPage(vd),
+      drawer: Drawer(
+        semanticLabel: "lavr",
+        child: Column(children: <Widget>[
+          UserAccountsDrawerHeader(
+            accountName: Text("WangQiong"),
+            accountEmail: Text("wqandroid@gmail.com"),
+            currentAccountPicture: CircleAvatar(backgroundImage: AssetImage("images/mine_avatar.png"),backgroundColor: Colors.white,),
+          ),
+          ListTile(title: Text("主页",style:itemTextStyle ,),leading: Icon(Icons.home),onTap: ()=> _chanList(MoveListPage.PAGE_HOME),),
+          ListTile(title: Text("热门",style:itemTextStyle),leading: Icon(Icons.whatshot),onTap: ()=> _chanList(MoveListPage.PAGE_HOT)),
+          ListTile(title: Text("已发布",style:itemTextStyle),leading: Icon(Icons.group_work),onTap:  ()=>_chanList(MoveListPage.PAGE_RELEASE)),
+          ListTile(title: Text("女优",style:itemTextStyle),leading: Icon(Icons.face),onTap: ()=>{}),
+          ListTile(title: Text("类别",style:itemTextStyle),leading: Icon(Icons.loyalty),onTap: ()=>{}),
+        ],),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }

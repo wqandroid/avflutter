@@ -3,15 +3,25 @@ import 'Move.dart';
 import 'MoveCenter.dart';
 import 'MoveDetail.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'util/VlaueChange.dart';
+import 'package:event_bus/event_bus.dart';
 
 
 class MoveListPage extends StatefulWidget {
-  const MoveListPage({Key key}) : super(key: key);
+  static const int PAGE_HOME = 1;
+  static const int PAGE_HOT = 2;
+  static const int PAGE_RELEASE = 3;
+
+  final ValueNotifierData data;
+
+  MoveListPage(this.data);
+
+  _MoveListPageState page;
 
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    return new _MoveListPageState();
+    return _MoveListPageState();
   }
 }
 
@@ -21,7 +31,9 @@ class _MoveListPageState extends State<MoveListPage> {
   static int page = 1;
   bool isLoading;
 
+  String type = "";
   MoveCenter moveCenter = new MoveCenter();
+
 
   @override
   void initState() {
@@ -38,9 +50,24 @@ class _MoveListPageState extends State<MoveListPage> {
       }
     });
     _onRefresh();
+    widget.data.addListener(() {
+
+      var newValue=widget.data.value;
+
+      print("收到传递:$newValue");
+
+      var isNeedLoad=type == newValue;
+
+      print("load$isNeedLoad");
+
+      setState(() {
+        type = widget.data.value;
+        page = 1;
+        _onRefresh();
+      });
+    });
+
   }
-
-
 
   Widget _renderRow(BuildContext context, int index) {
 //        width: 90, height: 160, fit: BoxFit.fill)
@@ -50,8 +77,7 @@ class _MoveListPageState extends State<MoveListPage> {
         Navigator.push(
             context,
             new MaterialPageRoute(
-                builder: (context) =>
-                    ContactsDemo(items[index])));
+                builder: (context) => ContactsDemo(items[index])));
       },
       child: Card(
           color: Colors.white,
@@ -63,7 +89,7 @@ class _MoveListPageState extends State<MoveListPage> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(6.0),
                   child: new CachedNetworkImage(
-                    imageUrl:items[index].coverUrl,
+                    imageUrl: items[index].coverUrl,
                     width: 90.0,
                     height: 120.0,
                     fit: BoxFit.fitHeight,
@@ -107,7 +133,7 @@ class _MoveListPageState extends State<MoveListPage> {
   Future<Null> _onRefresh() async {
     isLoading = true;
     print("开始刷新$page");
-    moveCenter.getMove(page).then((data) {
+    moveCenter.getMove(type, page).then((data) {
       setState(() {
         if (data != null) {
           if (page == 1) {
@@ -136,22 +162,3 @@ class _MoveListPageState extends State<MoveListPage> {
         onRefresh: _onRefresh);
   }
 }
-
-class MoveDetail extends StatelessWidget {
-  final Move move;
-
-  MoveDetail({Key key, this.move}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return new Scaffold(
-      appBar: new AppBar(title: Text(move.title)),
-      body: Column(
-        children: <Widget>[Image.network(move.coverUrl)],
-      ),
-    );
-  }
-}
-
-

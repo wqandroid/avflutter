@@ -6,6 +6,8 @@ import 'Move.dart';
 import 'MoveListPage.dart';
 import 'package:event_bus/event_bus.dart';
 import 'util/VlaueChange.dart';
+import 'ActorListPage.dart';
+import 'TagPage.dart';
 
 void main() => runApp(new MyApp());
 
@@ -59,23 +61,52 @@ class _MyHomePageState extends State<MyHomePage> {
 
   ValueNotifierData vd = ValueNotifierData('Hello World');
 
+  static const int PAGE_HOME = 1;
+  static const int PAGE_HOT = 2;
+  static const int PAGE_RELEASE = 3;
+  static const int PAGE_ACTRESS = 4;
+  static const int PAGE_TAG = 5;
 
   static var itemTextStyle=TextStyle(fontWeight: FontWeight.w600,color: Colors.black54);
-  static int oldtype=MoveListPage.PAGE_HOME;
-  _chanList(int type){
-    print("修改列:$type");
-    if(oldtype == type)return;
+
+  static var itemTextSelStyle=TextStyle(fontWeight: FontWeight.w600,color: Colors.blue);
+
+  static int oldIndexPage=PAGE_HOME;
+
+  _chanList(int indexPage){
+    print("修改列:$indexPage");
+
+    if(indexPage == PAGE_ACTRESS){
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>new ActorListPage()));
+      return;
+    }
+
+    if(indexPage == PAGE_TAG){
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>new ScrollableTabsTags()));
+      return;
+    }
+
+    if(oldIndexPage == indexPage)return;
+
     setState(() {
-      if(type == MoveListPage.PAGE_HOT){
+      if(indexPage == PAGE_HOT){
         vd.value="popular";
-      }else if(type == MoveListPage.PAGE_HOME){
+      }else if(indexPage == PAGE_HOME){
         vd.value="";
-      }else if(type == MoveListPage.PAGE_RELEASE){
+      }else if(indexPage == PAGE_RELEASE){
         vd.value="released";
       }
-      oldtype=type;
+      oldIndexPage=indexPage;
     });
     Navigator.pop(context);
+  }
+
+  TextStyle _getTextStype(int indexPage){
+    if(oldIndexPage == indexPage){
+      return itemTextSelStyle;
+    }else{
+      return itemTextStyle;
+    }
   }
 
 
@@ -96,11 +127,11 @@ class _MyHomePageState extends State<MyHomePage> {
             accountEmail: Text("wqandroid@gmail.com"),
             currentAccountPicture: CircleAvatar(backgroundImage: AssetImage("images/mine_avatar.png"),backgroundColor: Colors.white,),
           ),
-          ListTile(title: Text("主页",style:itemTextStyle ,),leading: Icon(Icons.home),onTap: ()=> _chanList(MoveListPage.PAGE_HOME),),
-          ListTile(title: Text("热门",style:itemTextStyle),leading: Icon(Icons.whatshot),onTap: ()=> _chanList(MoveListPage.PAGE_HOT)),
-          ListTile(title: Text("已发布",style:itemTextStyle),leading: Icon(Icons.group_work),onTap:  ()=>_chanList(MoveListPage.PAGE_RELEASE)),
-          ListTile(title: Text("女优",style:itemTextStyle),leading: Icon(Icons.face),onTap: ()=>{}),
-          ListTile(title: Text("类别",style:itemTextStyle),leading: Icon(Icons.loyalty),onTap: ()=>{}),
+          ListTile(title: Text("主页",style: _getTextStype(PAGE_HOME) ,),leading: Icon(Icons.home),onTap: ()=> _chanList(PAGE_HOME),),
+          ListTile(title: Text("热门",style:_getTextStype(PAGE_HOT)),leading: Icon(Icons.whatshot),onTap: ()=> _chanList(PAGE_HOT)),
+          ListTile(title: Text("已发布",style:_getTextStype(PAGE_RELEASE)),leading: Icon(Icons.group_work),onTap:  ()=>_chanList(PAGE_RELEASE)),
+          ListTile(title: Text("女优",style:itemTextStyle),leading: Icon(Icons.face),onTap: ()=>_chanList(PAGE_ACTRESS)),
+          ListTile(title: Text("类别",style:itemTextStyle),leading: Icon(Icons.loyalty),onTap: ()=>_chanList(PAGE_TAG)),
         ],),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );

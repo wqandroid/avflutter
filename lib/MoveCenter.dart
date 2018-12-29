@@ -72,6 +72,118 @@ class MoveCenter {
     }
   }
 
+
+//  return JAViewer.SERVICE.get(this.link + "/page/" + page);
+
+
+  Future getMoveByLink(String link,int page) async {
+    print("请求link:$link");
+    String url = "$link/page/$page";
+    try {
+      var client = new http.Client();
+      var response = await client.get(url);
+      var document = parse(response.body);
+
+      List<Element> eles = document.querySelectorAll("a[class*=movie-box]");
+      List<Move> moves = [];
+      int lens = eles.length;
+      print("eles_size$lens");
+      eles.forEach((box) {
+        Element img = box.querySelector("div.photo-frame > img");
+        Element span = box.querySelector("div.photo-info > span");
+        bool hot = span.getElementsByTagName("i").length > 0;
+        var date = span.querySelectorAll("date");
+        Move move = new Move(img.attributes["title"], date[0].text,
+            date[1].text, img.attributes["src"], box.attributes["href"], hot);
+        moves.add(move);
+        print("数据组装完成%");
+      });
+      return moves;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+
+//  @GET(BasicService.LANGUAGE_NODE + "/genre")
+//  Call<ResponseBody> getGenre();
+
+
+  Future getTags()async{
+
+    String url = "$baseUrl2/cn/genre/";
+    try {
+      var client = new http.Client();
+      var response = await client.get(url);
+      var document = parse(response.body);
+
+
+      Map<String,List<Genre>> data=new Map();
+
+
+      Element container=document.getElementsByClassName("pt-10").first;
+
+      List<String> keys=new List();
+      container.getElementsByTagName("h4").forEach((e){
+        keys.add(e.text);
+      });
+
+      List<List<Genre>> genres =new List();
+      container.getElementsByClassName("genre-box")
+      .forEach((e){
+
+        List<Genre> list=new List();
+
+        e.getElementsByTagName("a").forEach((e){
+          list.add(Genre(e.text, e.attributes["href"]));
+        });
+        genres.add(list);
+
+      });
+
+      for(int i=0;i<keys.length;i++){
+        List<Genre> value=genres[i];
+        String key=keys[i];
+        if(key ==""){
+          key="场地";
+        }
+        data[key]=value;
+      }
+      return data;
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
+
+
+  Future getActresses(int page)async{
+
+    String url = "$baseUrl2/cn/actresses/page/$page";
+    List<Actress> list=[];
+    try {
+      var client = new http.Client();
+      var response = await client.get(url);
+      var document = parse(response.body);
+      List<Element> boxs=document.querySelectorAll("a[class*=avatar-box]");
+      boxs.forEach((e){
+        Element img=e.querySelector("div.photo-frame > img");
+        Element span=e.querySelector("div.photo-info > span");
+        String avatarUrl= img.attributes["src"];
+        if(avatarUrl!=null && avatarUrl.endsWith("actor.jpg")){
+          list.add(Actress(span.text, avatarUrl, e.attributes["href"]));
+        }
+      });
+      return list;
+    }catch(e){
+      print(e);
+      return null;
+    }
+}
+
+
+
   Future getMoveDetailInfo(String link) async {
     print("get__:$link");
     try {
@@ -148,6 +260,13 @@ class MoveCenter {
       return null;
     }
   }
+
+
+
+
+
+
+
 
   Future<String> getAVG(String key) async {
     String videoUrl;

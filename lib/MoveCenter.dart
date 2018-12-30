@@ -9,8 +9,6 @@ import 'package:html/dom.dart';
 import 'Move.dart';
 import 'beans/MoveBase.dart';
 import 'dart:convert';
-import 'package:convert/convert.dart';
-import 'package:crypto/crypto.dart';
 
 class MoveCenter {
 //  for (Element box : document.select("a[class*=movie-box]")) {
@@ -38,12 +36,18 @@ class MoveCenter {
   static const String baseUrl1 = "https://avmoo.xyz";
   static const String baseUrl2 = "https://avsox.net";
 
+  static bool isAvSox=false;
+
+  String getNowUrl(){
+    return isAvSox ? baseUrl2:baseUrl1;
+  }
+
   Future getMove(String type, int page) async {
     //type null 主页
     //type released 发布
     //type popular 热门
 
-    String url = "$baseUrl2/cn/$type/page/$page";
+    String url = "${getNowUrl()}/cn/$type/page/$page";
     try {
       var client = new http.Client();
       var response = await client.get(url);
@@ -61,7 +65,6 @@ class MoveCenter {
         Move move = new Move(img.attributes["title"], date[0].text,
             date[1].text, img.attributes["src"], box.attributes["href"], hot);
         moves.add(move);
-        print("数据组装完成%");
       });
       return moves;
     } catch (e) {
@@ -107,7 +110,7 @@ class MoveCenter {
 //  Call<ResponseBody> getGenre();
 
   Future getTags() async {
-    String url = "$baseUrl2/cn/genre/";
+    String url = "${getNowUrl()}/cn/genre/";
     try {
       var client = new http.Client();
       var response = await client.get(url);
@@ -189,6 +192,7 @@ class MoveCenter {
             box.getElementsByTagName("img")[0].attributes["src"];
         String link = box.attributes["href"];
         print("缩略图:$thumbnailUrl");
+        print("link$link");
         moveDetailInfo.screenshots.add(Screenshot(thumbnailUrl, link));
       });
 

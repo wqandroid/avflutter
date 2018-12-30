@@ -4,12 +4,8 @@ import 'MoveCenter.dart';
 import 'MoveDetail.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'util/VlaueChange.dart';
-import 'package:event_bus/event_bus.dart';
-
 
 class MoveListPage extends StatefulWidget {
-
-
   final ValueNotifierData data;
 
   MoveListPage(this.data);
@@ -28,10 +24,10 @@ class _MoveListPageState extends State<MoveListPage> {
   ScrollController _controller = new ScrollController();
   static int page = 1;
   bool isLoading;
+  bool isLoadMore = false;
 
   String type = "popular";
   MoveCenter moveCenter = new MoveCenter();
-
 
   @override
   void initState() {
@@ -44,31 +40,36 @@ class _MoveListPageState extends State<MoveListPage> {
       if (maxScroll == pixels && items.length > 10 && !isLoading) {
         print("加载更多");
         page++;
-        _onRefresh();
+        _onRefresh(true);
       }
     });
-    _onRefresh();
-    widget.data.addListener(() {
+    _onRefresh(false);
 
-      var newValue=widget.data.value;
+    widget.data.addListener(() {
+      var newValue = widget.data.value;
 
       print("收到传递:$newValue");
 
-      var isNeedLoad=type == newValue;
+      var isNeedLoad = type == newValue;
 
       print("load$isNeedLoad");
 
       setState(() {
         type = widget.data.value;
         page = 1;
-        _onRefresh();
+        _onRefresh(false);
       });
     });
-
   }
 
   Widget _renderRow(BuildContext context, int index) {
 //        width: 90, height: 160, fit: BoxFit.fill)
+
+    if (isLoadMore && index >= items.length) {
+      return LinearProgressIndicator(
+        backgroundColor: Colors.pink,
+      );
+    }
 
     return GestureDetector(
       onTap: () {
@@ -133,35 +134,63 @@ class _MoveListPageState extends State<MoveListPage> {
     );
   }
 
-  Future<Null> _onRefresh() async {
-    isLoading = true;
+  Future<Null> _onRefresh(bool isLoadMore) async {
+    setState(() {
+      isLoading = true;
+      this.isLoadMore = isLoadMore;
+      if (!isLoadMore) {
+        items.clear();
+      }
+    });
     print("开始刷新$page");
     moveCenter.getMove(type, page).then((data) {
       setState(() {
         if (data != null) {
-          if (page == 1) {
-            items.clear();
-          }
           isLoading = false;
           items.addAll(data);
         } else {
           final snackBar = new SnackBar(content: new Text('加载出错!'));
           Scaffold.of(context).showSnackBar(snackBar);
+          setState(() {
+            this.isLoadMore = false;
+            isLoading = false;
+          });
         }
-        return null;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return new RefreshIndicator(
-        child: ListView.builder(
-            itemCount: items.length,
-            padding: EdgeInsets.only(top: 6, bottom: 6),
-            controller: _controller,
-            physics: new AlwaysScrollableScrollPhysics(),
-            itemBuilder: _renderRow),
-        onRefresh: _onRefresh);
+    if (items.isEmpty && isLoading) {
+      return Scaffold(
+        body: Container(
+          child: Center(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              Padding(
+                padding: EdgeInsets.only(left: 12),
+                child: Text('正在加载....别慌'),
+              ),
+            ],
+          )),
+        ),
+      );
+    } else {
+      return new RefreshIndicator(
+          child: ListView.builder(
+              itemCount:
+                  (isLoadMore && isLoading) ? items.length + 1 : items.length,
+              padding: EdgeInsets.only(top: 6, bottom: 6),
+              controller: _controller,
+              physics: new AlwaysScrollableScrollPhysics(),
+              itemBuilder: _renderRow),
+          onRefresh: () {
+            _onRefresh(false);
+          });
+    }
   }
 }

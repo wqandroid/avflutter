@@ -7,6 +7,8 @@ import 'beans/MoveBase.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'VideoPlayPage.dart';
 import 'MoveListPageByLink.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 class _ContactCategory extends StatelessWidget {
   const _ContactCategory({Key key, this.icon, this.children}) : super(key: key);
@@ -168,7 +170,6 @@ class ContactsDemoState extends State<ContactsDemo> {
 
   AVinfo aVinfo;
 
-
   @override
   void initState() {
     // TODO: implement initState
@@ -187,7 +188,7 @@ class ContactsDemoState extends State<ContactsDemo> {
     });
   }
 
-  List<Widget> crateAvatarInfo(BuildContext context,List<Actress> actresses) {
+  List<Widget> crateAvatarInfo(BuildContext context, List<Actress> actresses) {
     List<Widget> items = [];
     actresses.forEach((avt) {
       print(avt.imageUrl);
@@ -195,8 +196,12 @@ class ContactsDemoState extends State<ContactsDemo> {
       items.add(Card(
         color: Colors.white,
         child: GestureDetector(
-          onTap: (){
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>MoveListPageByLink(avt.name, avt.link)));
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        MoveListPageByLink(avt.name, avt.link)));
           },
           child: Column(
             children: <Widget>[
@@ -235,7 +240,8 @@ class ContactsDemoState extends State<ContactsDemo> {
       return windets;
     } else {
       if (moveDetailInfo != null && moveDetailInfo.actresses.length > 0) {
-        windets.add(new Row(children: crateAvatarInfo(context,moveDetailInfo.actresses)));
+        windets.add(new Row(
+            children: crateAvatarInfo(context, moveDetailInfo.actresses)));
       } else {
         print("meitoux");
         windets.add(Container(
@@ -249,68 +255,99 @@ class ContactsDemoState extends State<ContactsDemo> {
     return windets;
   }
 
-  List<Widget> buildTags(BuildContext context,) {
+  List<Widget> buildTags(
+    BuildContext context,
+  ) {
     List<Widget> windets = [];
     if (moveDetailInfo == null) return windets;
     if (moveDetailInfo.genres != null && moveDetailInfo.genres.length > 0) {
       windets.add(Wrap(
-        children: creatTags(context,moveDetailInfo.genres),
+        children: creatTags(context, moveDetailInfo.genres),
       ));
     } else {
       windets.add(Container(
         height: 72,
-        child: Center(child: new Text("没有标签分类"),),));
+        child: Center(
+          child: new Text("没有标签分类"),
+        ),
+      ));
     }
     return windets;
   }
 
-  List<Widget> creatTags(BuildContext context,List<Genre> genres) {
+  List<Widget> creatTags(BuildContext context, List<Genre> genres) {
     List<Widget> windets = [];
     genres.forEach((tag) {
       print(tag.name);
       windets.add(Padding(
           padding: EdgeInsets.all(2.0),
-          child: new ActionChip(label: new Text(tag.name), onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (context)=>MoveListPageByLink(tag.name, tag.link)));
-          })));
+          child: new ActionChip(
+              label: new Text(tag.name),
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            MoveListPageByLink(tag.name, tag.link)));
+              })));
     });
     return windets;
   }
 
-  List<Widget> buildScreenShoot() {
+  List<Widget> buildScreenShoot(BuildContext context) {
     List<Widget> windets = [];
-    if (moveDetailInfo == null ) {
-      return [Container(
-        height: 72,
-        child: Center(child: new Text("没有影片截图"),),)];
+    if (moveDetailInfo == null) {
+      return [
+        Container(
+          height: 72,
+          child: Center(
+            child: new Text("没有影片截图"),
+          ),
+        )
+      ];
     }
 
-    if(moveDetailInfo.screenshots.isEmpty){
-      return [Container(
-        height: 72,
-        child: Center(child: new Text("没有影片截图"),),)];
+    if (moveDetailInfo.screenshots.isEmpty) {
+      return [
+        Container(
+          height: 72,
+          child: Center(
+            child: new Text("没有影片截图"),
+          ),
+        )
+      ];
     }
 
     windets.add(Wrap(
-      children: creatScreenShootItems(moveDetailInfo.screenshots),
+      children: creatScreenShootItems(context, moveDetailInfo.screenshots),
     ));
     return windets;
   }
 
-  List<Widget> creatScreenShootItems(List<Screenshot> screenshots) {
+  List<Widget> creatScreenShootItems(
+      BuildContext context, List<Screenshot> screenshots) {
     print("缩率图:${screenshots.length}");
     List<Widget> windets = [];
     screenshots.forEach((e) {
       windets.add(Padding(
         padding: EdgeInsets.all(4),
-        child: new CachedNetworkImage(
-          imageUrl: e.thumbnailUrl,
-          fit: BoxFit.cover,
-          width: 56,
-          height: 56,
-          errorWidget:
-              new Image.asset("images/def_avatar.png", width: 56, height: 56),
-          placeholder: new Container(color: Colors.grey, width: 56, height: 56),
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => PhotoViewGalleryList(e,screenshots)));
+          },
+          child: new CachedNetworkImage(
+            imageUrl: e.thumbnailUrl,
+            fit: BoxFit.cover,
+            width: 56,
+            height: 56,
+            errorWidget:
+                new Image.asset("images/def_avatar.png", width: 56, height: 56),
+            placeholder:
+                new Container(color: Colors.grey, width: 56, height: 56),
+          ),
         ),
       ));
     });
@@ -321,30 +358,35 @@ class ContactsDemoState extends State<ContactsDemo> {
     Map<String, dynamic> args = {
       "vid": vid,
     };
-    await platform.invokeMethod("getsign", args).then((url) {
-    });
+    await platform.invokeMethod("getsign", args).then((url) {});
   }
 
-  Future doPreview(String url)async{
+  Future doPreview(String url) async {
     Map<String, dynamic> args = {
       "url": url,
     };
-    await platform.invokeMethod("preview", args).then((url) {
-    });
+    await platform.invokeMethod("preview", args).then((url) {});
   }
 
-
   Widget buildVideoUrlPlay() {
-
-    if(aVinfo == null){
-      return LinearProgressIndicator(backgroundColor: Colors.pink,valueColor: AlwaysStoppedAnimation(Colors.green));
+    if (aVinfo == null) {
+      return LinearProgressIndicator(
+          backgroundColor: Colors.pink,
+          valueColor: AlwaysStoppedAnimation(Colors.green));
     }
-    var color = aVinfo .videoId==null ? Colors.grey : Colors.pink;
+    var color = aVinfo.videoId == null ? Colors.grey : Colors.pink;
 
-    var widget = IconButton(icon: Icon(aVinfo.videoId==null?Icons.error:Icons.play_arrow,color: color,),
-     onPressed: aVinfo.videoId==null?null:(){
-      doPlay(aVinfo.videoId);
-    },);
+    var widget = IconButton(
+      icon: Icon(
+        aVinfo.videoId == null ? Icons.error : Icons.play_arrow,
+        color: color,
+      ),
+      onPressed: aVinfo.videoId == null
+          ? null
+          : () {
+              doPlay(aVinfo.videoId);
+            },
+    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -369,7 +411,7 @@ class ContactsDemoState extends State<ContactsDemo> {
           width: 180,
           height: 80,
           child: Center(
-            child:widget,
+            child: widget,
           ),
         )
       ],
@@ -397,9 +439,7 @@ class ContactsDemoState extends State<ContactsDemo> {
                 IconButton(
                   icon: const Icon(Icons.star),
                   tooltip: 'Edit',
-                  onPressed: () {
-                   
-                  },
+                  onPressed: () {},
                 ),
                 PopupMenuButton<AppBarBehavior>(
                   onSelected: (AppBarBehavior value) {
@@ -471,14 +511,72 @@ class ContactsDemoState extends State<ContactsDemo> {
                 ),
                 _ContactCategory(
                   icon: Icons.photo,
-                  children: buildScreenShoot(),
+                  children: buildScreenShoot(context),
                 ),
-                _ContactCategory(icon: Icons.label, children: buildTags(context)),
+                _ContactCategory(
+                    icon: Icons.label, children: buildTags(context)),
               ]),
             ),
           ],
         ),
       ),
     );
+  }
+
+//大图预览
+
+}
+
+class PhotoViewGalleryList extends StatefulWidget {
+  List<Screenshot> images;
+  Screenshot screenshot;
+
+
+  int index;
+
+  PhotoViewGalleryList(this.screenshot,this.images);
+
+  @override
+  State<StatefulWidget> createState() {
+    // TODO: implement createState
+    index=images.indexOf(screenshot);
+    return new _PhotoViewGalleryList();
+  }
+}
+
+class _PhotoViewGalleryList extends State<PhotoViewGalleryList> {
+  List<PhotoViewGalleryPageOptions> createView() {
+    return widget.images.map<PhotoViewGalleryPageOptions>((s) {
+      return PhotoViewGalleryPageOptions(
+        imageProvider: NetworkImage(s.link),
+        heroTag: "tag${s.link}",
+      );
+    }).toList();
+  }
+
+  final PageController controller = new PageController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+//    controller.animateToPage(1, duration: Duration(milliseconds: 200), curve: null);
+    new Future.delayed(const Duration(microseconds:100), () {
+      //任务具体代码
+      controller.jumpToPage(widget.index);
+    });
+  }
+
+
+
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+
+    PhotoViewGallery child =
+        PhotoViewGallery(pageController: controller, pageOptions: createView());
+
+    return Container(child: child);
   }
 }

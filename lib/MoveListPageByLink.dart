@@ -24,6 +24,7 @@ class _MoveListPageByLink extends State<MoveListPageByLink> {
   ScrollController _controller = new ScrollController();
   static int page = 1;
   bool isLoading;
+  bool isLoadMore = false;
 
   MoveCenter moveCenter = new MoveCenter();
 
@@ -32,21 +33,28 @@ class _MoveListPageByLink extends State<MoveListPageByLink> {
     // TODO: implement initState
     super.initState();
     items.clear();
-    page=1;
+    page = 1;
     _controller.addListener(() {
       var maxScroll = _controller.position.maxScrollExtent;
       var pixels = _controller.position.pixels;
       if (maxScroll == pixels && items.length > 10 && !isLoading) {
         print("加载更多");
         page++;
-        _onRefresh();
+        _onRefresh(true);
       }
     });
-    _onRefresh();
+    _onRefresh(false);
   }
 
   Widget _renderRow(BuildContext context, int index) {
 //        width: 90, height: 160, fit: BoxFit.fill)
+
+    if (index >= items.length && isLoadMore && isLoading) {
+      return LinearProgressIndicator(
+        backgroundColor: Colors.pink,
+      );
+    }
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -110,15 +118,19 @@ class _MoveListPageByLink extends State<MoveListPageByLink> {
     );
   }
 
-  Future<Null> _onRefresh() async {
-    isLoading = true;
+  Future<Null> _onRefresh(bool isLoadMore) async {
+    setState(() {
+      isLoading = true;
+      this.isLoadMore = isLoadMore;
+      if (!isLoadMore) {
+        items.clear();
+      }
+    });
+
     print("开始刷新$page");
     moveCenter.getMoveByLink(widget.link, page).then((data) {
       setState(() {
         if (data != null) {
-          if (page == 1) {
-            items.clear();
-          }
           isLoading = false;
           items.addAll(data);
         } else {
@@ -130,6 +142,40 @@ class _MoveListPageByLink extends State<MoveListPageByLink> {
     });
   }
 
+  Widget getBody() {
+    bool isLoadingMoreing = isLoadMore && isLoading && items.length > 1;
+
+    if (items.isEmpty && isLoading) {
+      return Scaffold(
+        body: Container(
+          child: Center(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              Padding(
+                padding: EdgeInsets.only(left: 12),
+                child: Text('正在加载....别慌'),
+              ),
+            ],
+          )),
+        ),
+      );
+    } else {
+      return new RefreshIndicator(
+          child: ListView.builder(
+              itemCount: isLoadingMoreing ? items.length + 1 : items.length,
+              padding: EdgeInsets.only(top: 6, bottom: 6),
+              controller: _controller,
+              physics: new AlwaysScrollableScrollPhysics(),
+              itemBuilder: _renderRow),
+          onRefresh: () {
+            _onRefresh(false);
+          });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
@@ -138,13 +184,6 @@ class _MoveListPageByLink extends State<MoveListPageByLink> {
           // the App.build method, and use it to set our appbar title.
           title: new Text(widget.title),
         ),
-        body: new RefreshIndicator(
-            child: ListView.builder(
-                itemCount: items.length,
-                padding: EdgeInsets.only(top: 6, bottom: 6),
-                controller: _controller,
-                physics: new AlwaysScrollableScrollPhysics(),
-                itemBuilder: _renderRow),
-            onRefresh: _onRefresh));
+        body: getBody());
   }
 }

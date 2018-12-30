@@ -186,6 +186,8 @@ class MoveCenter {
       moveDetailInfo.coverUrl =
           document.querySelector("[class=bigImage]").attributes["href"];
 
+      print("colvurl${moveDetailInfo.coverUrl}");
+
       List<Element> boxs = document.querySelectorAll("[class*=sample-box]");
       boxs.forEach((box) {
         String thumbnailUrl =

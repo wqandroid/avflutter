@@ -336,7 +336,8 @@ class ContactsDemoState extends State<ContactsDemo> {
             Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => PhotoViewGalleryList(e,screenshots)));
+                    builder: (context) =>
+                        PhotoViewGalleryList(e, screenshots)));
           },
           child: new CachedNetworkImage(
             imageUrl: e.thumbnailUrl,
@@ -469,10 +470,17 @@ class ContactsDemoState extends State<ContactsDemo> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: <Widget>[
-                    Image.network(
-                      move.coverUrl,
-                      fit: BoxFit.cover,
-                      height: _appBarHeight,
+                    CachedNetworkImage(
+                      imageUrl: moveDetailInfo == null
+                          ? move.coverUrl
+                          : moveDetailInfo.coverUrl,
+                      height: 256,
+                      placeholder: CachedNetworkImage(
+                        imageUrl: move.coverUrl,
+                        fit: BoxFit.scaleDown,
+                        height: 256,
+                      ),
+                      fit: BoxFit.fill,
                     ),
                     // This gradient ensures that the toolbar icons are distinct
                     // against the background image.
@@ -531,15 +539,14 @@ class PhotoViewGalleryList extends StatefulWidget {
   List<Screenshot> images;
   Screenshot screenshot;
 
-
   int index;
 
-  PhotoViewGalleryList(this.screenshot,this.images);
+  PhotoViewGalleryList(this.screenshot, this.images);
 
   @override
   State<StatefulWidget> createState() {
     // TODO: implement createState
-    index=images.indexOf(screenshot);
+    index = images.indexOf(screenshot);
     return new _PhotoViewGalleryList();
   }
 }
@@ -561,14 +568,11 @@ class _PhotoViewGalleryList extends State<PhotoViewGalleryList> {
     // TODO: implement initState
     super.initState();
 //    controller.animateToPage(1, duration: Duration(milliseconds: 200), curve: null);
-    new Future.delayed(const Duration(microseconds:100), () {
+    new Future.delayed(const Duration(microseconds: 100), () {
       //任务具体代码
       controller.jumpToPage(widget.index);
     });
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {

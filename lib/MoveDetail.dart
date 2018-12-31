@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path/path.dart';
 import 'Move.dart';
 import 'MoveCenter.dart';
 import 'beans/MoveBase.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-import 'VideoPlayPage.dart';
 import 'MoveListPageByLink.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
+import 'package:flutter_simple_video_player/flutter_simple_video_player.dart';
 
 class _ContactCategory extends StatelessWidget {
   const _ContactCategory({Key key, this.icon, this.children}) : super(key: key);
@@ -355,21 +353,28 @@ class ContactsDemoState extends State<ContactsDemo> {
     return windets;
   }
 
-  Future doPlay(String vid) async {
+  Future doPlay(BuildContext context,String vid) async {
     Map<String, dynamic> args = {
       "vid": vid,
     };
-    await platform.invokeMethod("getsign", args).then((url) {});
+    await platform.invokeMethod("getsign", args).then((url) {
+       Navigator.push(context, MaterialPageRoute(builder: (context)=>VideoPlay(url)));
+    });
   }
 
-  Future doPreview(String url) async {
-    Map<String, dynamic> args = {
-      "url": url,
-    };
-    await platform.invokeMethod("preview", args).then((url) {});
+  Future doPreview(BuildContext context,String url) async {
+
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>VideoPlay(url)));
+
+//    Map<String, dynamic> args = {
+//      "url": url,
+//    };
+//    await platform.invokeMethod("preview", args).then((url) {
+//      Navigator.push(context, MaterialPageRoute(builder: (context)=>VideoPlay(url)));
+//    });
   }
 
-  Widget buildVideoUrlPlay() {
+  Widget buildVideoUrlPlay(BuildContext context) {
     if (aVinfo == null) {
       return LinearProgressIndicator(
           backgroundColor: Colors.pink,
@@ -385,7 +390,7 @@ class ContactsDemoState extends State<ContactsDemo> {
       onPressed: aVinfo.videoId == null
           ? null
           : () {
-              doPlay(aVinfo.videoId);
+              doPlay(context,aVinfo.videoId);
             },
     );
 
@@ -404,7 +409,7 @@ class ContactsDemoState extends State<ContactsDemo> {
                   color: color,
                 ),
                 onPressed: () {
-                  doPreview(aVinfo.previewUrl);
+                  doPreview(context,aVinfo.previewUrl);
                 }),
           ),
         ),
@@ -499,7 +504,7 @@ class ContactsDemoState extends State<ContactsDemo> {
             ),
             SliverList(
               delegate: SliverChildListDelegate(<Widget>[
-                buildVideoUrlPlay(),
+                buildVideoUrlPlay(context),
                 Divider(
                   height: 1,
                   color: Colors.grey,
@@ -582,5 +587,44 @@ class _PhotoViewGalleryList extends State<PhotoViewGalleryList> {
         PhotoViewGallery(pageController: controller, pageOptions: createView());
 
     return Container(child: child);
+  }
+}
+
+class VideoPlay extends StatefulWidget {
+  final String url;
+
+  VideoPlay(this.url);
+
+  @override
+  _VideoPlay createState() => _VideoPlay();
+}
+
+class _VideoPlay extends State<VideoPlay> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    print("播放视频${widget.url}");
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Video Demo"),
+        ),
+        body: Container(
+            child: Column(
+          children: <Widget>[
+            Container(
+              height: 200.0,
+              child: SimpleVideoPlayer(
+                widget.url,
+              ),
+            )
+          ],
+        )));
   }
 }

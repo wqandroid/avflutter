@@ -36,7 +36,7 @@ class MoveCenter {
   static const String baseUrl1 = "https://avmoo.xyz";
   static const String baseUrl2 = "https://avsox.net";
 
-  static bool isAvSox=false;
+  static bool isAvSox=true;
 
   String getNowUrl(){
     return isAvSox ? baseUrl2:baseUrl1;

@@ -42,19 +42,15 @@ public class MainActivity extends FlutterActivity {
                     final String ts = String.valueOf(System.currentTimeMillis() / 1000);
                     String vid = methodCall.argument("vid");
                     result.success(String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", vid, ts, b(vid, ts)));
-                    playVideoUse(String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", vid, ts, b(vid, ts)));
+//                    playVideoUse(String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", vid, ts, b(vid, ts)));
                 }else if(methodCall.method.equals("preview")){
                     String url = methodCall.argument("url");
-                    playVideoUse(url);
-                    result.success("");
+//                    playVideoUse(url);
+                    result.success(url);
                 }
             }
         });
-
     }
-
-
-
     public void playVideoUse(String url){
 //        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
 ////        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);

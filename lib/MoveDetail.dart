@@ -6,7 +6,7 @@ import 'beans/MoveBase.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'MoveListPageByLink.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:flutter_simple_video_player/flutter_simple_video_player.dart';
+import 'package:video_exo_plugin/video_player.dart';
 
 class _ContactCategory extends StatelessWidget {
   const _ContactCategory({Key key, this.icon, this.children}) : super(key: key);
@@ -601,30 +601,52 @@ class VideoPlay extends StatefulWidget {
 
 class _VideoPlay extends State<VideoPlay> {
 
+
+  VideoPlayerController _controller;
+  bool _isPlaying = false;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print("播放视频${widget.url}");
+    _controller = VideoPlayerController.network(
+      widget.url,
+    )
+      ..addListener(() {
+        final bool isPlaying = _controller.value.isPlaying;
+        if (isPlaying != _isPlaying) {
+          setState(() {
+            _isPlaying = isPlaying;
+          });
+        }
+      })
+      ..initialize().then((_) {
+        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
+        setState(() {});
+      });
   }
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return Scaffold(
-        appBar: AppBar(
-          title: Text("Video Demo"),
+    return MaterialApp(
+      title: 'Video Demo',
+      home: Scaffold(
+        body: Center(
+          child: _controller.value.initialized
+              ? AspectRatio(
+            aspectRatio: _controller.value.aspectRatio,
+            child: VideoPlayer(_controller),
+          )
+              : Container(),
         ),
-        body: Container(
-            child: Column(
-          children: <Widget>[
-            Container(
-              height: 200.0,
-              child: SimpleVideoPlayer(
-                widget.url,
-              ),
-            )
-          ],
-        )));
+        floatingActionButton: FloatingActionButton(
+          onPressed: _controller.value.isPlaying
+              ? _controller.pause
+              : _controller.play,
+          child: Icon(
+            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
+          ),
+        ),
+      ),
+    );
   }
 }

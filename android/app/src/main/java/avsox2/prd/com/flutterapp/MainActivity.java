@@ -50,6 +50,7 @@ public class MainActivity extends FlutterActivity {
                 }
             }
         });
+
     }
     public void playVideoUse(String url){
 //        String extension = MimeTypeMap.getFileExtensionFromUrl(url);

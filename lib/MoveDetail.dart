@@ -7,6 +7,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'MoveListPageByLink.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:video_exo_plugin/video_player.dart';
+import 'package:video_exo_plugin/flutter_simple_video_player.dart';
 
 class _ContactCategory extends StatelessWidget {
   const _ContactCategory({Key key, this.icon, this.children}) : super(key: key);
@@ -353,18 +354,19 @@ class ContactsDemoState extends State<ContactsDemo> {
     return windets;
   }
 
-  Future doPlay(BuildContext context,String vid) async {
+  Future doPlay(BuildContext context, String vid) async {
     Map<String, dynamic> args = {
       "vid": vid,
     };
     await platform.invokeMethod("getsign", args).then((url) {
-       Navigator.push(context, MaterialPageRoute(builder: (context)=>VideoPlay(url)));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => VideoPlay(url)));
     });
   }
 
-  Future doPreview(BuildContext context,String url) async {
-
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>VideoPlay(url)));
+  Future doPreview(BuildContext context, String url) async {
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => VideoPlay(url)));
 
 //    Map<String, dynamic> args = {
 //      "url": url,
@@ -390,7 +392,7 @@ class ContactsDemoState extends State<ContactsDemo> {
       onPressed: aVinfo.videoId == null
           ? null
           : () {
-              doPlay(context,aVinfo.videoId);
+              doPlay(context, aVinfo.videoId);
             },
     );
 
@@ -409,7 +411,7 @@ class ContactsDemoState extends State<ContactsDemo> {
                   color: color,
                 ),
                 onPressed: () {
-                  doPreview(context,aVinfo.previewUrl);
+                  doPreview(context, aVinfo.previewUrl);
                 }),
           ),
         ),
@@ -600,53 +602,14 @@ class VideoPlay extends StatefulWidget {
 }
 
 class _VideoPlay extends State<VideoPlay> {
-
-
-  VideoPlayerController _controller;
-  bool _isPlaying = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = VideoPlayerController.network(
-      widget.url,
-    )
-      ..addListener(() {
-        final bool isPlaying = _controller.value.isPlaying;
-        if (isPlaying != _isPlaying) {
-          setState(() {
-            _isPlaying = isPlaying;
-          });
-        }
-      })
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {});
-      });
-  }
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Video Demo',
-      home: Scaffold(
-        body: Center(
-          child: _controller.value.initialized
-              ? AspectRatio(
-            aspectRatio: _controller.value.aspectRatio,
-            child: VideoPlayer(_controller),
-          )
-              : Container(),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: _controller.value.isPlaying
-              ? _controller.pause
-              : _controller.play,
-          child: Icon(
-            _controller.value.isPlaying ? Icons.pause : Icons.play_arrow,
-          ),
-        ),
-      ),
-    );
+    return Scaffold(
+        body: Container(
+            child: SimpleVideoPlayer(
+              widget.url,
+              isLandscape: true,
+              videoType: VideoType.net,
+            )));
   }
 }

@@ -1,5 +1,4 @@
 # flutter_av
-
 通过解析网址 https://avmoo.xyz"; "https://avsox.net
 拿到显示数据.并根据番号.搜索种子实现播放
 
@@ -12,7 +11,10 @@
 当前使用 video_player 插件源码自行修改实现的av在线点播功能!
 
 ## 待解决问题
-目前在ios端安装有点问题.(可能是环境问题)	
+目前在ios端安装有点问题.(可能是环境问题)
+## 参考项目（api,部分页面UI）
+感谢[JAViewer作者](https://github.com/SplashCodes/JAViewer)
+
 
 
 

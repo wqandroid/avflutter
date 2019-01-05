@@ -10,7 +10,7 @@
 2.pub的[video_player](https://pub.dartlang.org/packages/video_player)播放有一个bug!如果m3u8的视频文件没有扩展名会播放失败,
 当前使用 video_player 插件源码自行修改实现的av在线点播功能!
 
-##下载安装
+## 下载安装
 [点击下载APK文件](https://github.com/wqandroid/avflutter/raw/master/images/apkfile/avflutter.zip)
 
 ## 待解决问题

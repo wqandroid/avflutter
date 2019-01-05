@@ -1,9 +1,9 @@
 name: video_exo_plugin
 description: Flutter plugin for displaying inline video with other Flutter
   widgets on Android and iOS.
-author: Flutter Team <flutter-dev@googlegroups.com>
-version: 0.8.0
-homepage: https://github.com/flutter/plugins/tree/master/packages/video_player
+author: Flutter Dev <wqandroid@gmail.com>
+version: 0.0.1
+homepage: https://github.com/wqandroid/avflutter/tree/master/video_exo_plugin
 
 flutter:
   plugin:

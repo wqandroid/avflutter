@@ -39,6 +39,8 @@ android {
     }
 
     dependencies {
+
+        compileOnly files('libs/flutter.jar')
         implementation 'com.google.android.exoplayer:exoplayer-core:2.9.1'
         implementation 'com.google.android.exoplayer:exoplayer-hls:2.9.1'
         implementation 'com.google.android.exoplayer:exoplayer-dash:2.9.1'

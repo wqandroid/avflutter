@@ -2,7 +2,7 @@
 通过解析网址 https://avmoo.xyz"; "https://avsox.net
 拿到显示数据.并根据番号.搜索种子实现播放
 
-![Image text](https://github.com/wqandroid/avflutter/raw/master/images/snapshoot/img_album.png)
+#![Image text](https://github.com/wqandroid/avflutter/raw/master/images/snapshoot/img_album.png)
   
 ## 技术累计
 1.通过一个礼拜的学习.基本掌握了flutter的大部分控件使用,dart的语法也比较简洁,就是读起来没有java那么舒服.

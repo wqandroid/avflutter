@@ -6,8 +6,8 @@ import 'beans/MoveBase.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'MoveListPageByLink.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-import 'package:video_exo_plugin/video_player.dart';
-import 'package:video_exo_plugin/flutter_simple_video_player.dart';
+//import 'package:video_exo_plugin/video_player.dart';
+//import 'package:video_exo_plugin/flutter_simple_video_player.dart';
 
 class _ContactCategory extends StatelessWidget {
   const _ContactCategory({Key key, this.icon, this.children}) : super(key: key);
@@ -610,10 +610,11 @@ class _VideoPlay extends State<VideoPlay> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-            child: SimpleVideoPlayer(
-      widget.url,
-      isLandscape: true,
-      videoType: VideoType.net,
-    )));
+//            child: SimpleVideoPlayer(
+//      widget.url,
+//      isLandscape: true,
+//      videoType: VideoType.net,
+//    )
+    ));
   }
 }

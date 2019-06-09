@@ -44,12 +44,9 @@ class ScrollableTabsDemoState extends State<ScrollableTabsTags>
     });
   }
 
+  // ignore: missing_return
   Widget getTabContent(List<Genre> tags) {
-    if (tags == null) {
-      return Container(
-        child: Text("laoding"),
-      );
-    } else {
+    if (tags != null) {
       return GridView.count(
         padding: EdgeInsets.all(5),
         //一行多少个
@@ -63,58 +60,55 @@ class ScrollableTabsDemoState extends State<ScrollableTabsTags>
         //宽高比
         childAspectRatio: 4 / 1,
         children: List.generate(tags.length, (index) {
-
-
-
-          return GestureDetector(child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueGrey, width: 1)),
-            child: Center(
-              child: Text(tags[index].name, textAlign: TextAlign.center),
+          return GestureDetector(
+            child: Container(
+              decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueGrey, width: 1)),
+              child: Center(
+                child: Text(tags[index].name, textAlign: TextAlign.center),
+              ),
             ),
-          ),onTap: (){
-            print(tags[index].name);
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => MoveListPageByLink(tags[index].name, tags[index].link)));
-            },);
+            onTap: () {
+              print(tags[index].name);
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MoveListPageByLink(
+                          tags[index].name, tags[index].link)));
+            },
+          );
         }),
+      );
+    } else {
+      return Container(
+        child: Center(
+          child: Text("laoding"),
+        ),
       );
     }
   }
 
-  //              onTap: _onGoLink(tags[index])
-  _onGoLink(Genre g) {
-
-  }
-
   List<Widget> getTab() {
-    if (map == null) {
-      return [
-        Container(
-          child: Center(
-            child: Text("laoding"),
-          ),
-        ),
-      ];
-    } else {
+    if (map != null && map.length > 0) {
       return map.keys.map((s) {
         return getTabContent(map[s]);
       }).toList();
-    }
-  }
-
-  List<Widget> _getTopTab() {
-    if (map == null) {
-      return [
-        Container(
-          child: Text("laoding"),
-        ),
-      ];
     } else {
-      return map.keys.map((s) {
-        return getTabContent(map[s]);
+      return title.map((s) {
+        return Center(
+          child: Center(
+              child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              CircularProgressIndicator(),
+              Padding(
+                padding: EdgeInsets.only(left: 12),
+                child: Text('正在加载....'),
+              ),
+            ],
+          )),
+        );
       }).toList();
     }
   }

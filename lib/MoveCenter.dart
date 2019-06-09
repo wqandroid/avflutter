@@ -32,11 +32,10 @@ class MoveCenter {
 //  }
 // AVMOO 日本  https://avmoo.xyz
 // AVMOO 日本无码  https://avsox.net
+  static const String baseUrl1 = "https://javzoo.com";
+  static const String baseUrl2 = "https://avmoo.com";
 
-  static const String baseUrl1 = "https://avmoo.xyz";
-  static const String baseUrl2 = "https://avsox.net";
-
-  static bool isAvSox=true;
+  static bool isAvSox=false;
 
   String getNowUrl(){
     return isAvSox ? baseUrl2:baseUrl1;
@@ -151,21 +150,28 @@ class MoveCenter {
   }
 
   Future getActresses(int page) async {
-    String url = "$baseUrl2/cn/actresses/page/$page";
+    String url = "${getNowUrl()}/cn/actresses/page/$page";
+    print("请求av作者:"+url);
     List<Actress> list = [];
     try {
       var client = new http.Client();
       var response = await client.get(url);
       var document = parse(response.body);
-      List<Element> boxs = document.querySelectorAll("a[class*=avatar-box]");
+
+
+      List<Element> boxs =  document.querySelectorAll("a[class*=avatar-box]");
+      int lens = boxs.length;
+      print("boxs$lens");
+//      print("boxs_size"+boxs.first.toString());
       boxs.forEach((e) {
         Element img = e.querySelector("div.photo-frame > img");
         Element span = e.querySelector("div.photo-info > span");
         String avatarUrl = img.attributes["src"];
-        if (avatarUrl != null && avatarUrl.endsWith("actor.jpg")) {
+        if (avatarUrl != null) {
           list.add(Actress(span.text, avatarUrl, e.attributes["href"]));
         }
       });
+
       return list;
     } catch (e) {
       print(e);

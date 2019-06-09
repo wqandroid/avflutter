@@ -76,7 +76,7 @@ class _MoveListPageByLink extends State<MoveListPageByLink> {
                     width: 90.0,
                     height: 120.0,
                     fit: BoxFit.fitHeight,
-                    placeholder: Container(
+                    placeholder:(context,url)=> Container(
                       color: Colors.grey,
                       width: 90.0,
                       height: 120.0,

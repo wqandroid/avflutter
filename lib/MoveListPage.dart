@@ -92,7 +92,7 @@ class _MoveListPageState extends State<MoveListPage> {
                     width: 90.0,
                     height: 120.0,
                     fit: BoxFit.cover,
-                    placeholder: Container(
+                    placeholder: (content,url)=>Container(
                       width: 90.0,
                       height: 120.0,
                       color: Colors.grey,

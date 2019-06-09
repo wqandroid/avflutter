@@ -76,14 +76,7 @@ class _ActorListPage extends State<ActorListPage> {
             onTap:()=> _goMoveList(avt.name,avt.link),
             child:  CachedNetworkImage(
               imageUrl: avt.imageUrl,
-              placeholder: new Image.asset(
-                "images/def_avatar.png",
-              ),
               fit: BoxFit.fill,
-              errorWidget: new Image.asset(
-                "images/def_avatar.png",
-                fit: BoxFit.fill,
-              ),
             ),
           ),
           footer: GridTileBar(

@@ -206,19 +206,20 @@ class ContactsDemoState extends State<ContactsDemo> {
             children: <Widget>[
               new CachedNetworkImage(
                 imageUrl: avt.imageUrl,
-                placeholder: new Image.asset(
-                  "images/def_avatar.png",
-                  width: 90,
-                  height: 90,
-                ),
+                placeholder: (context, url) => new CircularProgressIndicator(),
+//                placeholder: new Image.asset(
+//                  "images/def_avatar.png",
+//                  width: 90,
+//                  height: 90,
+//                ),
                 fit: BoxFit.cover,
                 width: 90,
                 height: 90,
-                errorWidget: new Image.asset(
-                  "images/def_avatar.png",
-                  width: 90,
-                  height: 90,
-                ),
+                errorWidget: (context, url, error) => new Image.asset(
+                      "images/def_avatar.png",
+                      width: 90,
+                      height: 90,
+                    ),
               ),
               Text(avt.name.trim(),
                   maxLines: 1,
@@ -343,9 +344,12 @@ class ContactsDemoState extends State<ContactsDemo> {
             fit: BoxFit.cover,
             width: 56,
             height: 56,
-            errorWidget:
-                new Image.asset("images/def_avatar.png", width: 56, height: 56),
-            placeholder:
+            errorWidget: (context, url, error) => new Image.asset(
+                  "images/def_avatar.png",
+                  width: 56,
+                  height: 56,
+                ),
+            placeholder: (content, url) =>
                 new Container(color: Colors.grey, width: 56, height: 56),
           ),
         ),
@@ -482,7 +486,7 @@ class ContactsDemoState extends State<ContactsDemo> {
                           ? move.coverUrl
                           : moveDetailInfo.coverUrl,
                       height: 256,
-                      placeholder: CachedNetworkImage(
+                      placeholder: (context,url)=>CachedNetworkImage(
                         imageUrl: move.coverUrl,
                         fit: BoxFit.scaleDown,
                         height: 256,
@@ -607,9 +611,9 @@ class _VideoPlay extends State<VideoPlay> {
     return Scaffold(
         body: Container(
             child: SimpleVideoPlayer(
-              widget.url,
-              isLandscape: true,
-              videoType: VideoType.net,
-            )));
+      widget.url,
+      isLandscape: true,
+      videoType: VideoType.net,
+    )));
   }
 }

@@ -130,15 +130,17 @@ class _MyHomePageState extends State<MyHomePage> {
           IconButton(
             tooltip: 'Search',
             icon: const Icon(Icons.search),
-            onPressed: () async {
-              final String selected = await showSearch<String>(
-                context: context,
-                delegate: _delegate,
-              );
-              if (selected != null) {
-                setState(() {
-                });
-              }
+            onPressed: ()  {
+              showSearch(context: context,delegate: _MySearchDelegate());
+
+//              final String selected = await showSearch<String>(
+//                context: context,
+//                delegate: _delegate,
+//              );
+//              if (selected != null) {
+//                setState(() {
+//                });
+//              }
             },
           ),
         ],
@@ -281,7 +283,7 @@ class _MySearchDelegate extends SearchDelegate<String> {
   Widget buildSuggestions(BuildContext context) {
     // TODO: implement buildSuggestions
 
-    final Iterable<String> suggestions=<String>['波多野','西野翔'];
+    final Iterable<String> suggestions=<String>['波多野','西野翔',"三原ほのか","小西悠","吉沢明歩","松下美織"];
 
     return _SuggestionList(
       query: this.query,

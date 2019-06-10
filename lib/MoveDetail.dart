@@ -6,8 +6,8 @@ import 'beans/MoveBase.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'MoveListPageByLink.dart';
 import 'package:photo_view/photo_view_gallery.dart';
-//import 'package:video_exo_plugin/video_player.dart';
-//import 'package:video_exo_plugin/flutter_simple_video_player.dart';
+import 'video/VideoApp.dart';
+import 'video/VideoPlayAndrod.dart';
 
 class _ContactCategory extends StatelessWidget {
   const _ContactCategory({Key key, this.icon, this.children}) : super(key: key);
@@ -363,15 +363,14 @@ class ContactsDemoState extends State<ContactsDemo> {
       "vid": vid,
     };
     await platform.invokeMethod("getsign", args).then((url) {
-      Navigator.push(
-          context, MaterialPageRoute(builder: (context) => VideoPlay(url)));
+//      Navigator.push(
+//          context, MaterialPageRoute(builder: (context) => VideoPlayAndrod(url)));
     });
   }
 
   Future doPreview(BuildContext context, String url) async {
     Navigator.push(
-        context, MaterialPageRoute(builder: (context) => VideoPlay(url)));
-
+        context, MaterialPageRoute(builder: (context) => VideoApp(url)));
 //    Map<String, dynamic> args = {
 //      "url": url,
 //    };
@@ -596,25 +595,6 @@ class _PhotoViewGalleryList extends State<PhotoViewGalleryList> {
   }
 }
 
-class VideoPlay extends StatefulWidget {
-  final String url;
 
-  VideoPlay(this.url);
 
-  @override
-  _VideoPlay createState() => _VideoPlay();
-}
 
-class _VideoPlay extends State<VideoPlay> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        body: Container(
-//            child: SimpleVideoPlayer(
-//      widget.url,
-//      isLandscape: true,
-//      videoType: VideoType.net,
-//    )
-    ));
-  }
-}

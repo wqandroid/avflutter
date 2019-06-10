@@ -42,38 +42,23 @@ public class MainActivity extends FlutterActivity {
                     final String ts = String.valueOf(System.currentTimeMillis() / 1000);
                     String vid = methodCall.argument("vid");
                     result.success(String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", vid, ts, b(vid, ts)));
-//                    playVideoUse(String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", vid, ts, b(vid, ts)));
-                }else if(methodCall.method.equals("preview")){
+                    playVideoUse(String.format("http://api.rekonquer.com/psvs/mp4.php?vid=%s&ts=%s&sign=%s", vid, ts, b(vid, ts)));
+                } else if (methodCall.method.equals("preview")) {
                     String url = methodCall.argument("url");
-//                    playVideoUse(url);
+                    playVideoUse(url);
                     result.success(url);
                 }
             }
         });
 
     }
-    public void playVideoUse(String url){
-//        String extension = MimeTypeMap.getFileExtensionFromUrl(url);
-////        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-//        Intent mediaIntent = new Intent(Intent.ACTION_VIEW);
-////        mediaIntent.setDataAndType(Uri.parse(url), "video/*");
-//        mediaIntent.putExtra("url",url);
-//        startActivity(mediaIntent);
 
-        Intent intent = new Intent();
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        ComponentName cn = new ComponentName("wq.video.com.videolook", "wq.video.com.videolook.ui.avlist.detail.OtherMoveActivity");
-        intent.putExtra("url", url);
-        intent.setComponent(cn);
-        if (isIntentAvailable(this,intent)){
-            try {
-                startActivity(intent);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }else {
-            Toast.makeText(this,"没找到",Toast.LENGTH_LONG).show();
-        }
+    public void playVideoUse(String url) {
+//        android.util.Log.e(TAG, "playVideoUse: "+url);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Uri uri = Uri.parse(url);
+        intent.setData(uri);
+        startActivity(intent);
     }
 
 

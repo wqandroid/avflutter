@@ -26,10 +26,13 @@ dependencies:
   flutter_cache_manager: ^0.3.2
   cached_network_image: ^0.8.0
   #  video_player: ^0.8.0
+  flutter_ijk:
+    git:
+      url: https://github.com/jadennn/flutter_ijk
   event_bus: ^1.1.0
   photo_view: ^0.4.0
-#  video_exo_plugin:
-#              path: video_exo_plugin
+  video_exo_plugin:
+              path: video_exo_plugin
 
 dev_dependencies:
   flutter_test:

@@ -266,6 +266,8 @@ class MoveCenter {
       print("请求地址:$url");
       var client = new http.Client();
       var response = await client.get(url);
+      print(response);
+
       if (response.statusCode == 200) {
         Map<String, dynamic> avg = json.decode(response.body);
         bool success = avg["success"];
